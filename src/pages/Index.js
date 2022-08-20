@@ -37,15 +37,9 @@ function Index({ people, createPeople }) {
 
     const handleSubmit = event => {
         event.preventDefault();
-        if(!newForm.formValid) return;
         createPeople(newForm)
     };
 
-
-    useEffect(() => {
-        setFormValid(isFormValid());
-    })
-    
     // TODO: remove line break elements
     return (
         <section>
