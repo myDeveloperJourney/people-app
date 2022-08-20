@@ -7,7 +7,40 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+// Variables
+$maincolor: black;
+$contrastcolor: white;
+
+// Mixins
+@mixin white-text-black-bg {
+  color: $contrastcolor;
+  background-color: $maincolor;
 }
+
+@mixin black-text-white-bg {
+  color: $maincolor;
+  background-color: $contrastcolor;
+}
+
+// Header Component Styles
+.nav {
+  @include white-text-black-bg;
+  display: flex;
+  justify-content: center;
+
+  a {
+    @include white-text-black-bg;
+    text-decoration: none;
+    div {
+      margin: 10px;
+      font-size: large;
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .nav {
+    justify-content: flex-start;
+  }
+}
+
