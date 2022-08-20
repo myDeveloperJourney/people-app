@@ -41,7 +41,15 @@ function Main(props) {
     return (
         <main>
             <Routes>
-                <Route path="/" element={<Index people={people} createPeople={createPeople} />} />
+                <Route 
+                    path="/" 
+                    element={
+                        <Index 
+                            people={people} 
+                            createPeople={createPeople} 
+                        />
+                    } 
+                />
                 <Route path="/people/:id" element={<Show />} />
             </Routes>
         </main>
