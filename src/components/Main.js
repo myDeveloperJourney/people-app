@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import Index from '../pages/Index';
 import Show from '../pages/Show';
 
-function Main(props) {
+function Main({ user }) {
     const [ people, setPeople ] = useState(null); 
     
     const API_URL = 'http://localhost:4000/api/people';
@@ -66,8 +66,12 @@ function Main(props) {
     };
 
     useEffect(() => {
-        getPeople();
-    }, []);
+        if(user) {
+            getPeople();
+        } else {
+            setPeople(null);
+        }
+    }, [ user ]);
 
     return (
         <main>
