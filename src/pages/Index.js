@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 function Index({ people, createPeople }) {
     const [ newForm, setNewForm ] = useState({
         name: "",
         title: "",
-        image: "",
+        image: ""
     });
+
+    const [formValid, setFormValid] = useState(false);
 
     const loaded = () => {
         return people.map(({ name, _id }) => {
@@ -25,7 +27,7 @@ function Index({ people, createPeople }) {
     };
 
     const isFormValid = () => {
-        return newForm.name.length >= 3 && newForm.title.length >=3;
+        return newForm.name.length >= 3 && newForm.title.length >= 3;
     }
 
     const handleChange = event => {
@@ -37,8 +39,14 @@ function Index({ people, createPeople }) {
 
     const handleSubmit = event => {
         event.preventDefault();
-        createPeople(newForm)
+        if(!formValid) return;
+        createPeople(newForm);
     };
+
+
+    useEffect(() => {
+        setFormValid(isFormValid());
+    }, [ newForm ]); 
 
     // TODO: remove line break elements
     return (
@@ -65,7 +73,7 @@ function Index({ people, createPeople }) {
                     name="image"
                     placeholder="https://your-image-url.png"
                 /><br />
-                <input type="submit" value="Add Person" />
+                <input disabled={!formValid} type="submit" value="Add Person" />
             </form>
             { people ? loaded() : loading() }
         </section>

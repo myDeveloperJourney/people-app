@@ -38,6 +38,12 @@ $contrastcolor: white;
   }
 }
 
+.person-image {
+  height: 150px;
+  width: 150px;
+  border-radius: 50%;
+}
+
 @media (min-width: 768px) {
   .nav {
     justify-content: flex-start;

@@ -33,6 +33,37 @@ function Main(props) {
             // TODO: add logic or task if something goes wrong
         }
     };
+    
+    const deletePeople = async (id) => {
+        try {
+            await fetch(`${API_URL}/${id}`, {
+                method: 'DELETE'
+            });
+            
+            getPeople();
+
+        } catch (error) {
+            // TODO: add logic or task if something goes wrong
+        }
+    };
+    
+    
+    const updatePeople = async (id, updatedPerson) => {
+        try {
+            
+            await fetch(`${API_URL}/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-type': 'Application/json'
+                },
+                body: JSON.stringify(updatedPerson)
+            });
+            
+            getPeople();
+        } catch (error) {
+            // TODO: add logic or task if something goes wrong
+        }
+    };
 
     useEffect(() => {
         getPeople();
@@ -50,7 +81,16 @@ function Main(props) {
                         />
                     } 
                 />
-                <Route path="/people/:id" element={<Show />} />
+                <Route 
+                    path="/people/:id" 
+                    element={
+                        <Show 
+                            people={people}
+                            deletePeople={deletePeople}
+                            updatePeople={updatePeople} 
+                        />
+                    } 
+                />
             </Routes>
         </main>
     );
