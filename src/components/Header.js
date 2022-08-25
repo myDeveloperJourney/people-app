@@ -13,6 +13,9 @@ function Header({ user }) {
                     ? <>
                         <div>Welcome, {user.displayName}</div>
                         <div onClick={logout}>Log Out</div>
+                        <Link to="/people">
+                            <div>People</div>
+                        </Link>
                       </>
                     : <div onClick={login}>Log In</div>
                 }
