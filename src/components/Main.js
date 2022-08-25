@@ -1,7 +1,18 @@
 import { useEffect, useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Index from '../pages/Index';
 import Show from '../pages/Show';
+import Home from '../pages/Home';
+
+
+const PrivateRoute = ({ children, user }) => {
+    if(user) {
+        return children;
+    } else {
+        return <Navigate to="/" />
+    }
+};
+
 
 function Main({ user }) {
     const [ people, setPeople ] = useState(null); 
@@ -76,23 +87,28 @@ function Main({ user }) {
     return (
         <main>
             <Routes>
+                <Route path="/" element={<Home />} />
                 <Route 
-                    path="/" 
+                    path="/people" 
                     element={
-                        <Index 
-                            people={people} 
-                            createPeople={createPeople} 
-                        />
+                        <PrivateRoute user={user}>
+                            <Index 
+                                people={people} 
+                                createPeople={createPeople} 
+                            />
+                        </PrivateRoute>
                     } 
                 />
                 <Route 
                     path="/people/:id" 
                     element={
-                        <Show 
-                            people={people}
-                            deletePeople={deletePeople}
-                            updatePeople={updatePeople} 
-                        />
+                        <PrivateRoute user={user}>
+                            <Show 
+                                people={people}
+                                deletePeople={deletePeople}
+                                updatePeople={updatePeople} 
+                            />
+                        </PrivateRoute>
                     } 
                 />
             </Routes>
