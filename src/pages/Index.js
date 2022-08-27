@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 function Index({ people, createPeople }) {
@@ -43,9 +43,14 @@ function Index({ people, createPeople }) {
         createPeople(newForm);
     };
 
+    const isFormValidRef = useRef(null);
 
     useEffect(() => {
-        setFormValid(isFormValid());
+        isFormValidRef.current = isFormValid;
+    });
+
+    useEffect(() => {
+        setFormValid(isFormValidRef.current());
     }, [ newForm ]); 
 
     // TODO: remove line break elements
