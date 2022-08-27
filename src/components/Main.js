@@ -1,16 +1,36 @@
-import { useEffect, useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Index from '../pages/Index';
 import Show from '../pages/Show';
+import Home from '../pages/Home';
+
+
+const PrivateRoute = ({ children, user }) => {
+    if(user) {
+        return children;
+    } else {
+        return <Navigate to="/" />
+    }
+};
+
 
 function Main({ user }) {
     const [ people, setPeople ] = useState(null); 
+
+    const getPeopleRef = useRef(null);
     
-    const API_URL = 'http://localhost:4000/api/people';
+    
+    const API_URL = 'https://people-app-api-v1.herokuapp.com/api/people';
 
     const getPeople = async () => {
         try {
-            const response = await fetch(API_URL);
+            const token = await user.getIdToken();
+            const response = await fetch(API_URL, {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            });
             const data = await response.json();
             setPeople(data);
         } catch (error) {
@@ -20,10 +40,12 @@ function Main({ user }) {
     
     const createPeople = async (person) => { 
         try {
+            const token = await user.getIdToken();
             await fetch(API_URL, {
                 method: 'POST',
                 headers: {
-                    'Content-type': 'Application/json'
+                    'Content-type': 'Application/json',
+                    'Authorization': 'Bearer ' + token
                 },
                 body: JSON.stringify(person)
             });
@@ -36,8 +58,12 @@ function Main({ user }) {
     
     const deletePeople = async (id) => {
         try {
+            const token = await user.getIdToken();
             await fetch(`${API_URL}/${id}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
             });
             
             getPeople();
@@ -50,11 +76,12 @@ function Main({ user }) {
     
     const updatePeople = async (id, updatedPerson) => {
         try {
-            
+            const token = await user.getIdToken();
             await fetch(`${API_URL}/${id}`, {
                 method: 'PUT',
                 headers: {
-                    'Content-type': 'Application/json'
+                    'Content-type': 'Application/json',
+                    'Authorization': 'Bearer ' + token
                 },
                 body: JSON.stringify(updatedPerson)
             });
@@ -66,8 +93,12 @@ function Main({ user }) {
     };
 
     useEffect(() => {
+        getPeopleRef.current = getPeople;
+    });
+
+    useEffect(() => {
         if(user) {
-            getPeople();
+            getPeopleRef.current();
         } else {
             setPeople(null);
         }
@@ -76,23 +107,28 @@ function Main({ user }) {
     return (
         <main>
             <Routes>
+                <Route path="/" element={<Home />} />
                 <Route 
-                    path="/" 
+                    path="/people" 
                     element={
-                        <Index 
-                            people={people} 
-                            createPeople={createPeople} 
-                        />
+                        <PrivateRoute user={user}>
+                            <Index 
+                                people={people} 
+                                createPeople={createPeople} 
+                            />
+                        </PrivateRoute>
                     } 
                 />
                 <Route 
                     path="/people/:id" 
                     element={
-                        <Show 
-                            people={people}
-                            deletePeople={deletePeople}
-                            updatePeople={updatePeople} 
-                        />
+                        <PrivateRoute user={user}>
+                            <Show 
+                                people={people}
+                                deletePeople={deletePeople}
+                                updatePeople={updatePeople} 
+                            />
+                        </PrivateRoute>
                     } 
                 />
             </Routes>

@@ -36,7 +36,7 @@ function Show({ people, deletePeople, updatePeople }) {
         if(person) {
             setUpdateForm(person);
         }
-    }, [people, person]);
+    }, [person]);
 
     const loading = () => {
         return <h1>Loading ... </h1>
